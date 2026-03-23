@@ -1,0 +1,140 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+
+\title{Replicator Dynamics and Evolutionary Game Theory:\\From ODEs to Stochastic Fixation}
+\author{Abhi Wadhwa}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Notes on the math behind evolutionary game theory. I cover the replicator equation, evolutionarily stable strategies (ESS), the connection between fixed points and Nash equilibria, and the Moran process for finite populations. The main thread running through all of this is: how does natural selection act on strategies when fitness depends on what everyone else is doing? The replicator equation gives the infinite-population answer, ESS tells you which equilibria survive invasion, and the Moran process handles the messy finite-population case where drift can overwhelm selection.
+\end{abstract}
+
+\section{The Replicator Equation}
+
+Imagine a large, well-mixed population where each individual plays one of $n$ strategies. Strategy $i$ has population share $x_i$, so the state of the population is a point $x = (x_1, \ldots, x_n)$ on the simplex $\Delta^{n-1}$. When two individuals meet, they play a game with payoff matrix $A \in \mathbb{R}^{n \times n}$. The expected payoff (``fitness'') of strategy $i$ against the current population is:
+\begin{equation}
+    f_i(x) = (Ax)_i = \sum_{j=1}^{n} A_{ij} x_j
+\end{equation}
+and the average fitness across the whole population is:
+\begin{equation}
+    \bar{f}(x) = x^\top A x = \sum_{i} x_i f_i(x)
+\end{equation}
+
+The replicator equation says that strategies with above-average fitness grow, and those with below-average fitness shrink:
+\begin{equation}
+    \dot{x}_i = x_i \left[ f_i(x) - \bar{f}(x) \right]
+\end{equation}
+
+This is a system of ODEs on the simplex. It's easy to see that the simplex is invariant: if you start with a valid probability distribution, you stay on one (since $\sum_i \dot{x}_i = 0$ always). Also, faces of the simplex are invariant---if a strategy goes extinct ($x_i = 0$), it stays extinct.
+
+I think the most intuitive way to understand this equation is: \textbf{strategies reproduce proportional to their frequency \textit{times} their excess fitness}. The $x_i$ out front means rare strategies grow slowly even if they're very fit, and the $f_i(x) - \bar{f}(x)$ term means what matters is relative fitness, not absolute fitness.
+
+\section{Fixed Points and Nash Equilibria}
+
+After playing with the replicator equation for a while, you notice that the fixed points ($\dot{x} = 0$ for all $i$) have a nice game-theoretic interpretation.
+
+\begin{theorem}
+Every Nash equilibrium of the symmetric game with payoff matrix $A$ is a fixed point of the replicator dynamics. Conversely, every interior fixed point (where all $x_i > 0$) is a Nash equilibrium.
+\end{theorem}
+
+The proof is straightforward. At an interior fixed point, we need $f_i(x) = \bar{f}(x)$ for all $i$. This means all strategies have equal fitness, which is exactly the indifference condition for a mixed Nash equilibrium. For boundary fixed points (some $x_i = 0$), you can have situations where an extinct strategy would do better if reintroduced, but it can't grow from zero---so it's a fixed point but not a Nash equilibrium.
+
+\textbf{The important caveat:} not all Nash equilibria are stable under the replicator dynamics. A Nash equilibrium might be a saddle point or an unstable fixed point. This is where ESS comes in.
+
+\section{Evolutionarily Stable Strategies}
+
+The concept of an ESS, due to Maynard Smith and Price (1973), captures the idea of a strategy that can resist invasion by mutants.
+
+\begin{definition}
+A strategy $x^*$ is an \textbf{Evolutionarily Stable Strategy (ESS)} if for every mutant strategy $y \neq x^*$, either:
+\begin{enumerate}
+    \item $u(x^*, x^*) > u(y, x^*)$ \quad (strict Nash condition), or
+    \item $u(x^*, x^*) = u(y, x^*)$ and $u(x^*, y) > u(y, y)$ \quad (stability condition)
+\end{enumerate}
+where $u(p, q) = p^\top A q$.
+\end{definition}
+
+The first condition says that $x^*$ is a strict best response to itself---any mutant does strictly worse against the incumbent. If there's a tie (condition 2), then the incumbent must do better \textit{against the mutant} than the mutant does against itself. The intuition is: even if the mutant does equally well against the incumbents, once mutants start meeting each other, the incumbent still wins.
+
+The connection to dynamics is:
+
+\begin{proposition}
+Every ESS is an asymptotically stable fixed point of the replicator dynamics. The converse is almost true but not quite---there are asymptotically stable fixed points that aren't ESS, but they're somewhat pathological.
+\end{proposition}
+
+Let me give a concrete example. In the Hawk-Dove game with matrix $A = \begin{pmatrix} (V-C)/2 & V \\ 0 & V/2 \end{pmatrix}$ where $V < C$, there's a mixed ESS at $p^* = V/C$. This means the population stabilizes with a fraction $V/C$ of Hawks. If too many Hawks invade, they fight each other and lose fitness; if too few, it's profitable to be a Hawk. \textbf{The ESS is self-correcting.}
+
+\section{Rock-Paper-Scissors and Interior Dynamics}
+
+The most interesting example is Rock-Paper-Scissors (RPS). The payoff matrix is something like:
+\begin{equation}
+    A = \begin{pmatrix} 0 & -1 & 1 \\ 1 & 0 & -1 \\ -1 & 1 & 0 \end{pmatrix}
+\end{equation}
+
+The interior fixed point is $x^* = (1/3, 1/3, 1/3)$, and it's a Nash equilibrium. But here's the thing---it's \textit{not} an ESS. The dynamics around it form \textbf{closed orbits} (a center, not a spiral). The population cycles: Rock increases, then Paper takes over, then Scissors, then back to Rock.
+
+You can prove this by finding a Lyapunov function. The quantity $V(x) = x_1 x_2 x_3$ (the product of all frequencies) is conserved along trajectories. Since $V$ is constant, orbits can't spiral in or out---they must be closed loops.
+
+This is a beautiful example of why the distinction between Nash equilibrium and ESS matters. The center at $(1/3, 1/3, 1/3)$ is Lyapunov stable (nearby orbits stay nearby) but not asymptotically stable (they don't converge to it). It's a Nash equilibrium but not an ESS.
+
+\section{The Moran Process}
+
+Everything so far assumes an infinite population, which is a nice idealization but not always realistic. The Moran process gives us a stochastic model for \textbf{finite populations}.
+
+Consider a population of $N$ individuals, each playing one of two strategies (A or B). At each time step:
+\begin{enumerate}
+    \item Select one individual for reproduction, with probability proportional to fitness.
+    \item The offspring replaces a uniformly random individual (possibly even its parent).
+\end{enumerate}
+
+This is a birth-death Markov chain on the states $\{0, 1, \ldots, N\}$, where the state $k$ represents having $k$ individuals of type A. The key quantity is the \textbf{fixation probability}: starting from a single mutant ($k=1$), what's the probability that the mutant takes over the entire population?
+
+For frequency-independent selection (constant fitness ratio $r = f_A / f_B$):
+\begin{equation}
+    \rho = \frac{1 - 1/r}{1 - 1/r^N}
+\end{equation}
+
+For neutral drift ($r = 1$, all fitnesses equal), this simplifies to $\rho = 1/N$. This makes sense: with no selection, each individual is equally likely to be the ancestor of the whole future population.
+
+For frequency-dependent selection (where fitness depends on population composition), the formula generalizes. If $f_j^A$ and $f_j^B$ denote the fitness of types A and B when there are $j$ copies of A:
+\begin{equation}
+    \rho = \frac{1}{1 + \sum_{k=1}^{N-1} \prod_{j=1}^{k} \frac{f_j^B}{f_j^A}}
+\end{equation}
+
+I spent a while trying to figure out why this formula works. The key is that the fixation probability of a birth-death chain with transition probabilities $p_k$ (up) and $q_k$ (down) can be written as a telescoping product involving the ratios $q_k / p_k = f_k^B / f_k^A$. It's a classic result from Markov chain theory but feels like magic the first time you derive it.
+
+\textbf{The big picture:} the Moran process connects evolutionary game theory to population genetics. In large populations ($N \to \infty$), the stochastic dynamics converge to the deterministic replicator equation. But for small $N$, random drift is significant---a slightly beneficial mutant might still go extinct just by bad luck.
+
+\section{Putting It All Together}
+
+The three levels of description form a nice hierarchy:
+\begin{enumerate}
+    \item \textbf{Replicator dynamics} (infinite population, deterministic): gives the ODE, fixed points correspond to Nash equilibria.
+    \item \textbf{ESS analysis} (infinite population, stability): tells you which equilibria survive perturbation.
+    \item \textbf{Moran process} (finite population, stochastic): tells you what actually happens when $N$ is small and randomness matters.
+\end{enumerate}
+
+\textbf{The unifying theme is that frequency-dependent fitness creates feedback loops.} A strategy's success depends on the population composition, which in turn changes based on which strategies are successful. The replicator equation captures this feedback in the simplest possible way, and everything else is refinements for realism.
+
+\begin{thebibliography}{9}
+\bibitem{taylor1978} P.\ D.\ Taylor and L.\ B.\ Jonker, ``Evolutionary Stable Strategies and Game Dynamics,'' \textit{Mathematical Biosciences}, 40(1--2):145--156, 1978.
+
+\bibitem{maynardsmith1982} J.\ Maynard Smith, \textit{Evolution and the Theory of Games}, Cambridge University Press, 1982.
+
+\bibitem{hofbauer1998} J.\ Hofbauer and K.\ Sigmund, \textit{Evolutionary Games and Population Dynamics}, Cambridge University Press, 1998.
+
+\bibitem{nowak2006} M.\ A.\ Nowak, \textit{Evolutionary Dynamics: Exploring the Equations of Life}, Harvard University Press, 2006.
+
+\bibitem{sandholm2010} W.\ H.\ Sandholm, \textit{Population Games and Evolutionary Dynamics}, MIT Press, 2010.
+\end{thebibliography}
+
+\end{document}
