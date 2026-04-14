@@ -5,7 +5,6 @@ Key test: Hawk-Dove ESS matches p* = V/C analytically.
 """
 
 import numpy as np
-import pytest
 
 from src.core.ess import ESSChecker
 

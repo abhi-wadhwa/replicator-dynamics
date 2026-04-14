@@ -176,7 +176,9 @@ class ESSChecker:
             if is_ess:
                 stab_details.append("Interior ESS: A restricted to tangent space is neg-def.")
             else:
-                stab_details.append("Interior equilibrium but NOT ESS: tangent-space condition fails.")
+                stab_details.append(
+                    "Interior equilibrium but NOT ESS: tangent-space condition fails."
+                )
         else:
             # Boundary mixed strategy: check reduced game
             A_sub = self.A[np.ix_(support, support)]

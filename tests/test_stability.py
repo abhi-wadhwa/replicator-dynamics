@@ -6,7 +6,6 @@ coordination game vertices as stable nodes, etc.
 """
 
 import numpy as np
-import pytest
 
 from src.core.jacobian import JacobianAnalyzer, StabilityType
 

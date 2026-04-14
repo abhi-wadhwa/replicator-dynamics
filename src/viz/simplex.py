@@ -14,18 +14,14 @@ Key features:
 
 from __future__ import annotations
 
-from typing import Sequence
-
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.figure import Figure
 from matplotlib.axes import Axes
+from matplotlib.figure import Figure
 from numpy.typing import NDArray
 
-from src.core.replicator import ReplicatorODE
 from src.core.jacobian import JacobianAnalyzer, StabilityType
-
+from src.core.replicator import ReplicatorODE
 
 # ── Coordinate transforms ────────────────────────────────────────────
 

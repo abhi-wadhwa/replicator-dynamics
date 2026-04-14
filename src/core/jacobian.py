@@ -300,7 +300,7 @@ class JacobianAnalyzer:
             if len(support) == 1:
                 label = f"Pure strategy {support[0]}"
             elif len(support) == self.n:
-                label = f"Interior equilibrium"
+                label = "Interior equilibrium"
             else:
                 label = f"Edge equilibrium on strategies {list(support)}"
 

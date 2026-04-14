@@ -8,7 +8,7 @@ trajectories return near their starting point.
 import numpy as np
 import pytest
 
-from src.core.replicator import ReplicatorODE, MultiPopulationReplicator, PRESET_GAMES
+from src.core.replicator import PRESET_GAMES, MultiPopulationReplicator, ReplicatorODE
 
 
 class TestReplicatorODE:

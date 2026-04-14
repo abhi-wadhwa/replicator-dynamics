@@ -16,11 +16,10 @@ import sys
 import click
 import numpy as np
 
-from src.core.replicator import ReplicatorODE, PRESET_GAMES
 from src.core.ess import ESSChecker
-from src.core.moran import MoranProcess
 from src.core.jacobian import JacobianAnalyzer
-
+from src.core.moran import MoranProcess
+from src.core.replicator import PRESET_GAMES, ReplicatorODE
 
 GAME_ALIASES = {
     "rps": "Rock-Paper-Scissors",
@@ -131,7 +130,7 @@ def moran(game: str, pop_size: int, intensity: float, sims: int, initial: int) -
 
     exact = mp.fixation_probability_exact(initial)
 
-    click.echo(f"\nResults:")
+    click.echo("\nResults:")
     click.echo(f"  Fixation probability (MC):    {result.fixation_probability:.4f}")
     click.echo(f"  Fixation probability (exact): {exact:.4f}")
     click.echo(f"  Neutral drift (1/N):          {1/pop_size:.4f}")

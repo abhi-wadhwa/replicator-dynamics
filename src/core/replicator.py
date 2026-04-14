@@ -10,8 +10,7 @@ and f_bar(x) is the mean fitness of the population.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Callable
+from dataclasses import dataclass
 
 import numpy as np
 from numpy.typing import NDArray

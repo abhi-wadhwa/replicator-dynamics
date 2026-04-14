@@ -13,24 +13,23 @@ Features:
 from __future__ import annotations
 
 import matplotlib
+
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
 import numpy as np
 import streamlit as st
 
-from src.core.replicator import ReplicatorODE, PRESET_GAMES
 from src.core.ess import ESSChecker
-from src.core.moran import MoranProcess
 from src.core.jacobian import JacobianAnalyzer
+from src.core.moran import MoranProcess
 from src.core.mutations import ReplicatorMutator
+from src.core.replicator import PRESET_GAMES
 from src.viz.simplex import (
     SimplexPlotter,
-    bary_to_cart,
-    cart_to_bary,
-    plot_time_series,
     plot_bifurcation,
     plot_moran_trajectory,
+    plot_time_series,
 )
 
 
@@ -134,7 +133,7 @@ def main() -> None:
                 show_fp = st.checkbox("Show fixed points", value=True)
                 show_basins = st.checkbox("Show basins of attraction", value=False)
                 vf_res = st.slider("Vector field density", 10, 40, 20)
-                t_end_simplex = st.slider("Integration time", 10.0, 200.0, 50.0, step=5.0)
+                st.slider("Integration time", 10.0, 200.0, 50.0, step=5.0)
 
                 st.markdown("**Add trajectories**")
                 n_traj = st.number_input("Number of trajectories", 1, 20, 5)
@@ -163,7 +162,7 @@ def main() -> None:
                     show_fixed_points=show_fp,
                     show_basins=show_basins,
                     vector_resolution=vf_res,
-                    title=f"Phase Portrait",
+                    title="Phase Portrait",
                 )
                 st.pyplot(fig)
                 plt.close(fig)
